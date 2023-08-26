@@ -19,7 +19,7 @@ namespace MultiplayerTask {
             if (IsCollectable) {
                 IsCollectable = false;
                 player.Coins++;
-                DestroyImmediate(gameObject);
+                Destroy(gameObject);
             }
         }
     }
