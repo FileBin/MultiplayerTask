@@ -369,9 +369,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b02a8e9d801a5c903a5b0cd01242dc25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  actions: {fileID: -944628639613478452, guid: a54910af17d1d39e1a6225bdd4d6d24c, type: 3}
   maxHealth: 20
+  rechargeTime: 1
   kritRate: 0.25
   kritDamage: 2
+  missileSpeed: 15
+  missileIdicator: {fileID: 8773248956019339144}
+  missilePrefab: {fileID: 6444709569484390099, guid: 49b9bb6b9461752f7b6037b3ee7c698c, type: 3}
   LookDirectionIndicator: {fileID: 8773248955994750362}
 --- !u!114 &8773248955463334402
 MonoBehaviour:
@@ -385,8 +390,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a51d51e709fa0b35fad16aed9ca10019, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSpeed: 8.36
   actions: {fileID: -944628639613478452, guid: a54910af17d1d39e1a6225bdd4d6d24c, type: 3}
+  playerSpeed: 8.36
   spriteRenderers:
   - {fileID: 8773248954614363477}
   - {fileID: 8773248954610325236}

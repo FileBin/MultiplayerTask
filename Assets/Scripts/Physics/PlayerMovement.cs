@@ -3,11 +3,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace MultiplayerTask {
-    public class PlayerMovement : MonoBehaviour {
-        private const string GameplayName = "gameplay";
-
+    public class PlayerMovement : InputListener {
         [SerializeField, Range(1, 10)] float playerSpeed;
-        [SerializeField] InputActionAsset actions;
         [SerializeField] SpriteRenderer[] spriteRenderers;
         [SerializeField] Animator animator;
         [SerializeField] Player player;
@@ -18,18 +15,9 @@ namespace MultiplayerTask {
         Vector2 movement;
         bool flipX = false;
 
-        void OnEnable() {
-            actions.FindActionMap(GameplayName).Enable();
-        }
-
-        void OnDisable() {
-            actions.FindActionMap(GameplayName).Disable();
-        }
-
         void Start() {
             rigidbody = GetComponent<Rigidbody2D>();
-            actions.Enable();
-            moveAction = actions.FindActionMap(GameplayName, true).FindAction("move", true);
+            moveAction = ActionMap.FindAction("move", true);
 
             if (animator == null) animator = GetComponent<Animator>();
             if (player == null) player = GetComponent<Player>();

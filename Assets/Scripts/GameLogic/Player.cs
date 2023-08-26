@@ -1,26 +1,68 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace MultiplayerTask {
-    public class Player : MonoBehaviour {
+    public class Player : InputListener {
         public int Coins { get; set; }
         public int Health { get; set; }
         public Vector2 LookDirection { get; set; }
 
         [SerializeField] int maxHealth = 20;
+        [SerializeField] float rechargeTime = 20;
         [SerializeField] float kritRate = 0.25f;
-        [SerializeField] float kritDamage = 2f;
+        [SerializeField] int kritDamage = 2;
+        [SerializeField] float missileSpeed = 15f;
 
+        [SerializeField] SpriteRenderer missileIdicator;
+        [SerializeField] GameObject missilePrefab;
         [SerializeField] Transform LookDirectionIndicator;
 
+        InputAction fireAction;
+        float recharge = 0f;
         void Start() {
+            Random.InitState(System.DateTime.Now.Millisecond);
             Health = maxHealth;
+            fireAction = ActionMap.FindAction("fire", true);
         }
 
         void Update() {
-            if (LookDirectionIndicator != null) {
-                float rotationZ = Mathf.Atan2(LookDirection.y, LookDirection.x) * Mathf.Rad2Deg;
-                LookDirectionIndicator.rotation = Quaternion.Euler(0, 0, rotationZ);
+            RotateIndicator();
+            UpdateInput();
+        }
+
+        private void UpdateInput() {
+            bool canFire = recharge <= 0f;
+            missileIdicator.enabled = canFire;
+            
+            if (fireAction.ReadValue<float>() > 0.1f && canFire) {
+                recharge = rechargeTime;
+                LaunchMissile();
+            } else {
+                recharge -= Time.deltaTime;
             }
         }
+
+        private void LaunchMissile() {
+            var missileObject = Instantiate(missilePrefab);
+            var missileScript = missileObject.GetComponent<Missile>();
+            var missileRigidbody = missileObject.GetComponent<Rigidbody2D>();
+
+            missileScript.player = this;
+            missileScript.Damage = 1;
+            if (Random.Range(0f, 1f) < kritRate) {
+                missileScript.Damage += kritDamage;
+            }
+            missileObject.transform.rotation = GetLookRotation();
+            missileObject.transform.position = transform.position + new Vector3(LookDirection.x, LookDirection.y, 0);
+            missileRigidbody.velocity = LookDirection * missileSpeed;
+        }
+
+        void RotateIndicator() {
+            if (LookDirectionIndicator != null) {
+                LookDirectionIndicator.rotation = GetLookRotation();
+            }
+        }
+
+        Quaternion GetLookRotation() => Quaternion.Euler(0, 0, Mathf.Atan2(LookDirection.y, LookDirection.x) * Mathf.Rad2Deg);
     }
 }
