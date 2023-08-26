@@ -2,10 +2,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace MultiplayerTask {
-    public class Player : InputListener {
+    public class Player : InputListener, IDamagable {
         public int Coins { get; set; }
         public int Health { get; set; }
-        public Vector2 LookDirection { get; set; }
+        public Vector2 LookDirection { get; private set; }
 
         [SerializeField] int maxHealth = 20;
         [SerializeField] float rechargeTime = 20;
@@ -17,12 +17,13 @@ namespace MultiplayerTask {
         [SerializeField] GameObject missilePrefab;
         [SerializeField] Transform LookDirectionIndicator;
 
-        InputAction fireAction;
+        InputAction fireDirectionAction;
         float recharge = 0f;
         void Start() {
             Random.InitState(System.DateTime.Now.Millisecond);
             Health = maxHealth;
-            fireAction = ActionMap.FindAction("fire", true);
+            fireDirectionAction = ActionMap.FindAction("fire", true);
+            LookDirection = Vector2.left;
         }
 
         void Update() {
@@ -33,8 +34,13 @@ namespace MultiplayerTask {
         private void UpdateInput() {
             bool canFire = recharge <= 0f;
             missileIdicator.enabled = canFire;
-            
-            if (fireAction.ReadValue<float>() > 0.1f && canFire) {
+
+            var rightStick = fireDirectionAction.ReadValue<Vector2>();
+            bool fire = rightStick.sqrMagnitude > 0.1f;
+            if (fire) {
+                LookDirection = rightStick.normalized;
+            }
+            if (fire && canFire) {
                 recharge = rechargeTime;
                 LaunchMissile();
             } else {

@@ -16,12 +16,12 @@
                 },
                 {
                     "name": "fire",
-                    "type": "Button",
-                    "id": "8a781e1b-398d-46b7-b12f-fe33cdafa220",
-                    "expectedControlType": "Button",
+                    "type": "Value",
+                    "id": "3e10dc3d-b9fe-4f15-a58a-fd5815a5c72f",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -82,8 +82,19 @@
                 },
                 {
                     "name": "",
-                    "id": "d0c2316f-106c-48dc-8670-fc375b7412ba",
-                    "path": "<Keyboard>/space",
+                    "id": "9608292f-9b0c-46c6-880f-442413b5c892",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "438b1f25-028d-41c2-a54c-ffc4298420b8",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

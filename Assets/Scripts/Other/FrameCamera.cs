@@ -46,7 +46,7 @@ namespace MultiplayerTask {
             for (int i = 1; i < points.Length; i++) {
                 Gizmos.DrawLine(transform.TransformPoint(points[i - 1]), transform.TransformPoint(points[i]));
             }
-            Gizmos.DrawLine(points.Last(), points.First());
+            Gizmos.DrawLine(transform.TransformPoint(points.Last()), transform.TransformPoint(points.First()));
         }
     }
 }

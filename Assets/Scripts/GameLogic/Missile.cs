@@ -1,3 +1,5 @@
+using System.Linq;
+using TMPro;
 using UnityEngine;
 
 namespace MultiplayerTask {
@@ -6,8 +8,8 @@ namespace MultiplayerTask {
         public Player player { get; set; }
 
         private void OnTriggerEnter2D(Collider2D other) {
-            var other_player = other.GetComponent<Player>();
-            if (other_player != player) {
+            IDamagable other_player = other.GetComponents<MonoBehaviour>().OfType<IDamagable>().FirstOrDefault();
+            if (other_player != (IDamagable)player) {
                 if (other_player != null) {
                     Attack(other_player);
                 }
@@ -15,8 +17,11 @@ namespace MultiplayerTask {
             }
         }
 
-        private void Attack(Player player) {
-            player.Health -= Damage;
+        private void Attack(IDamagable damagable) {
+            damagable.Health -= Damage;
+            var text = Instantiate(
+                GameAssets.Instance.TextPrefab, transform.position, Quaternion.identity);
+            text.GetComponent<TextMeshPro>().text = Damage.ToString();
         }
     }
 }

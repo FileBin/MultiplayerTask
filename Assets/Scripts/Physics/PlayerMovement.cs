@@ -21,8 +21,6 @@ namespace MultiplayerTask {
 
             if (animator == null) animator = GetComponent<Animator>();
             if (player == null) player = GetComponent<Player>();
-
-            player.LookDirection = Vector2.left;
         }
 
         void Update() {
@@ -34,10 +32,6 @@ namespace MultiplayerTask {
             }
             for (int i = 0; i < spriteRenderers.Length; i++) {
                 spriteRenderers[i].flipX = flipX;
-            }
-
-            if (movement.sqrMagnitude > Vector2.kEpsilon) {
-                player.LookDirection = movement.normalized;
             }
 
             animator.SetFloat("speed", movement.magnitude);
