@@ -16,10 +16,15 @@ namespace MultiplayerTask {
         [SerializeField] SpriteRenderer missileIdicator;
         [SerializeField] GameObject missilePrefab;
         [SerializeField] Transform LookDirectionIndicator;
+        [SerializeField] SpriteRenderer[] spriteRenderers;
 
+        new Rigidbody2D rigidbody;
         InputAction fireDirectionAction;
         float recharge = 0f;
+        bool flipX = false;
+
         void Start() {
+            rigidbody = GetComponent<Rigidbody2D>();
             Random.InitState(System.DateTime.Now.Millisecond);
             Health = maxHealth;
             fireDirectionAction = ActionMap.FindAction("fire", true);
@@ -34,12 +39,25 @@ namespace MultiplayerTask {
         private void UpdateInput() {
             bool canFire = recharge <= 0f;
             missileIdicator.enabled = canFire;
+            var movement = rigidbody.velocity;
 
             var rightStick = fireDirectionAction.ReadValue<Vector2>();
             bool fire = rightStick.sqrMagnitude > 0.1f;
             if (fire) {
                 LookDirection = rightStick.normalized;
+                movement = rightStick;
             }
+
+            if (movement.x > Vector2.kEpsilon)
+                flipX = true;
+            else if (movement.x < -Vector2.kEpsilon) {
+                flipX = false;
+            }
+
+            for (int i = 0; i < spriteRenderers.Length; i++) {
+                spriteRenderers[i].flipX = flipX;
+            }
+
             if (fire && canFire) {
                 recharge = rechargeTime;
                 LaunchMissile();

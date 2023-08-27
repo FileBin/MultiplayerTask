@@ -352,11 +352,11 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 786ef98dbaabc3f449748ca1877d91f2, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &8773248955463334653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,6 +378,11 @@ MonoBehaviour:
   missileIdicator: {fileID: 8773248956019339144}
   missilePrefab: {fileID: 6444709569484390099, guid: 49b9bb6b9461752f7b6037b3ee7c698c, type: 3}
   LookDirectionIndicator: {fileID: 8773248955994750362}
+  spriteRenderers:
+  - {fileID: 8773248954614363477}
+  - {fileID: 8773248954610325236}
+  - {fileID: 8773248956019339144}
+  - {fileID: 8773248956511181746}
 --- !u!114 &8773248955463334402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,11 +397,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actions: {fileID: -944628639613478452, guid: a54910af17d1d39e1a6225bdd4d6d24c, type: 3}
   playerSpeed: 8.36
-  spriteRenderers:
-  - {fileID: 8773248954614363477}
-  - {fileID: 8773248954610325236}
-  - {fileID: 8773248956019339144}
-  - {fileID: 8773248956511181746}
   animator: {fileID: 8773248954610325239}
   player: {fileID: 8773248955463334653}
 --- !u!1 &8773248955802914990
