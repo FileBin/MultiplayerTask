@@ -5,12 +5,31 @@ using UnityEngine.InputSystem;
 namespace MultiplayerTask {
     public class Player : InputListener, IDamagable {
         public int Coins { get => m_coins.Value; set => m_coins.Value = value; }
-        public int Health { get => m_health.Value; set => m_health.Value = value; }
+        public int Health {
+            get => m_health.Value;
+            set {
+                m_health.Value = value;
+                if (m_health.Value < 0) {
+                    OnDeath();
+                }
+            }
+        }
+
+        public bool IsPlayable { get => m_playable.Value; }
+        public bool IsDead { get => m_dead.Value; }
+
+        private void OnDeath() {
+            if (!IsServer) return;
+            m_dead.Value = true;
+        }
+
         public int MaxHealth { get => maxHealth; }
         public Vector2 LookDirection { get; private set; }
 
         private NetworkVariable<int> m_coins = new NetworkVariable<int>();
         private NetworkVariable<int> m_health = new NetworkVariable<int>();
+        internal NetworkVariable<bool> m_playable = new NetworkVariable<bool>();
+        internal NetworkVariable<bool> m_dead = new NetworkVariable<bool>();
 
         [SerializeField] int maxHealth = 20;
         [SerializeField] float rechargeTime = 20;
@@ -27,6 +46,17 @@ namespace MultiplayerTask {
         InputAction fireDirectionAction;
         float recharge = 0f;
         bool flipX = false;
+
+        public override void OnNetworkSpawn() {
+            base.OnNetworkSpawn();
+            var players_count = GameObject.FindGameObjectsWithTag("Player").Length;
+            if (players_count == 1) {
+                transform.position = GameObject.FindGameObjectWithTag("Player1Spawn").transform.position;
+            }
+            if (players_count == 2) {
+                transform.position = GameObject.FindGameObjectWithTag("Player2Spawn").transform.position;
+            }
+        }
 
         void Start() {
             rigidbody = GetComponent<Rigidbody2D>();
@@ -48,6 +78,7 @@ namespace MultiplayerTask {
         void UpdateInput() {
             if (!IsClient) return;
             if (!IsOwner) return;
+            if (!IsPlayable) return;
             bool canFire = recharge <= 0f;
             missileIdicator.enabled = canFire;
             var movement = rigidbody.velocity;

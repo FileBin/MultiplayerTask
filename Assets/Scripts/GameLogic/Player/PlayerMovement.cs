@@ -25,8 +25,16 @@ namespace MultiplayerTask {
 
         void Update() {
             if (!IsOwner) return;
+            var animatorSpeed = rigidbody.velocity.magnitude;
+            animator.SetFloat("speed", animatorSpeed);
+            AnimateServerRpc(animatorSpeed);
+            if (!player.IsPlayable) return;
             movement = moveAction.ReadValue<Vector2>();
-            animator.SetFloat("speed", rigidbody.velocity.magnitude);
+        }
+
+        [ServerRpc]
+        void AnimateServerRpc(float speed) {
+            animator.SetFloat("speed", speed);
         }
 
         void FixedUpdate() {

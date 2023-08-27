@@ -1,18 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class NetworkSprite : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+[RequireComponent(typeof(SpriteRenderer))]
+public class NetworkSprite : NetworkBehaviour {
+    NetworkVariable<bool> n_flipX = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    NetworkVariable<bool> n_flipY = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    NetworkVariable<bool> n_enabled = new NetworkVariable<bool>(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
+    SpriteRenderer spriteRenderer;
+
+    void Awake() {
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public override void OnNetworkSpawn() {
+        if (!IsOwner) {
+            n_flipX.OnValueChanged += (bool old, bool val) => { spriteRenderer.flipX = val; };
+            n_flipY.OnValueChanged += (bool old, bool val) => { spriteRenderer.flipY = val; };
+            n_enabled.OnValueChanged += (bool old, bool val) => { spriteRenderer.enabled = val; };
+            return;
+        }
+        n_flipX.Value = spriteRenderer.flipX;
+        n_flipY.Value = spriteRenderer.flipY;
+        n_enabled.Value = spriteRenderer.enabled;
+    }
+
+    void Update() {
+        if (!IsOwner) return;
+        n_flipX.Value = spriteRenderer.flipX;
+        n_flipY.Value = spriteRenderer.flipY;
+        n_enabled.Value = spriteRenderer.enabled;
     }
 }
