@@ -8,6 +8,7 @@ namespace MultiplayerTask {
         public Player player { get; set; }
 
         private void OnTriggerEnter2D(Collider2D other) {
+            if(other.isTrigger) return;
             IDamagable other_player = other.GetComponents<MonoBehaviour>().OfType<IDamagable>().FirstOrDefault();
             if (other_player != (IDamagable)player) {
                 if (other_player != null) {

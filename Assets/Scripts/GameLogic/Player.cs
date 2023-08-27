@@ -5,6 +5,7 @@ namespace MultiplayerTask {
     public class Player : InputListener, IDamagable {
         public int Coins { get; set; }
         public int Health { get; set; }
+        public int MaxHealth { get => maxHealth; }
         public Vector2 LookDirection { get; private set; }
 
         [SerializeField] int maxHealth = 20;
