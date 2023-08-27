@@ -1,12 +1,16 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace MultiplayerTask {
     public class Player : InputListener, IDamagable {
-        public int Coins { get; set; }
-        public int Health { get; set; }
+        public int Coins { get => m_coins.Value; set => m_coins.Value = value; }
+        public int Health { get => m_health.Value; set => m_health.Value = value; }
         public int MaxHealth { get => maxHealth; }
         public Vector2 LookDirection { get; private set; }
+
+        private NetworkVariable<int> m_coins = new NetworkVariable<int>();
+        private NetworkVariable<int> m_health = new NetworkVariable<int>();
 
         [SerializeField] int maxHealth = 20;
         [SerializeField] float rechargeTime = 20;
@@ -27,9 +31,13 @@ namespace MultiplayerTask {
         void Start() {
             rigidbody = GetComponent<Rigidbody2D>();
             Random.InitState(System.DateTime.Now.Millisecond);
-            Health = maxHealth;
-            fireDirectionAction = ActionMap.FindAction("fire", true);
+            if (IsServer) {
+                Health = maxHealth;
+            }
             LookDirection = Vector2.left;
+            if (IsClient) {
+                fireDirectionAction = ActionMap.FindAction("fire", true);
+            }
         }
 
         void Update() {
@@ -37,7 +45,9 @@ namespace MultiplayerTask {
             UpdateInput();
         }
 
-        private void UpdateInput() {
+        void UpdateInput() {
+            if (!IsClient) return;
+            if (!IsOwner) return;
             bool canFire = recharge <= 0f;
             missileIdicator.enabled = canFire;
             var movement = rigidbody.velocity;
@@ -61,28 +71,33 @@ namespace MultiplayerTask {
 
             if (fire && canFire) {
                 recharge = rechargeTime;
-                LaunchMissile();
+                LaunchMissileServerRpc(LookDirection, GetLookRotation());
             } else {
                 recharge -= Time.deltaTime;
             }
         }
 
-        private void LaunchMissile() {
+        [ServerRpc]
+        void LaunchMissileServerRpc(Vector3 direction, Quaternion rotation) {
             var missileObject = Instantiate(missilePrefab);
             var missileScript = missileObject.GetComponent<Missile>();
             var missileRigidbody = missileObject.GetComponent<Rigidbody2D>();
 
             missileScript.player = this;
             missileScript.Damage = 1;
+
             if (Random.Range(0f, 1f) < kritRate) {
                 missileScript.Damage += kritDamage;
             }
-            missileObject.transform.rotation = GetLookRotation();
-            missileObject.transform.position = transform.position + new Vector3(LookDirection.x, LookDirection.y, 0);
-            missileRigidbody.velocity = LookDirection * missileSpeed;
+
+            missileObject.transform.rotation = rotation;
+            missileObject.transform.position = transform.position + new Vector3(direction.x, direction.y, 0);
+            missileRigidbody.velocity = direction.normalized * missileSpeed;
+            missileObject.GetComponent<NetworkObject>().Spawn(true);
         }
 
         void RotateIndicator() {
+            if (!IsOwner) return;
             if (LookDirectionIndicator != null) {
                 LookDirectionIndicator.rotation = GetLookRotation();
             }

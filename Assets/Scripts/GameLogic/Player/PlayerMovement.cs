@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,19 +16,22 @@ namespace MultiplayerTask {
 
         void Start() {
             rigidbody = GetComponent<Rigidbody2D>();
-            moveAction = ActionMap.FindAction("move", true);
-
             if (animator == null) animator = GetComponent<Animator>();
             if (player == null) player = GetComponent<Player>();
+            if (IsClient) {
+                moveAction = ActionMap.FindAction("move", true);
+            }
         }
 
         void Update() {
+            if (!IsOwner) return;
             movement = moveAction.ReadValue<Vector2>();
             animator.SetFloat("speed", rigidbody.velocity.magnitude);
         }
 
         void FixedUpdate() {
             rigidbody.SetRotation(Quaternion.identity);
+
             rigidbody.velocity = movement * playerSpeed;
         }
     }

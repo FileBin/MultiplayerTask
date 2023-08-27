@@ -2,21 +2,20 @@ using UnityEngine;
 using System.Linq;
 
 namespace MultiplayerTask {
-    public class FrameCamera : MonoBehaviour {
+    public class FrameCamera : PlayerFinder {
         [SerializeField] Vector2 frameSize = Vector2.one;
         [SerializeField, Range(0, 1)] float interpolationSpeed = 0.8f;
-        [SerializeField] GameObject player;
 
         Vector3 targetCameraPosition;
         float depthPosition;
 
-        void Start() {
+        public override void OnPlayerFound() {
             depthPosition = transform.position.z;
             targetCameraPosition = player.transform.position;
             UpdatePosition();
         }
 
-        void FixedUpdate() {
+        public override void UpdatePlayer() {
             CalculateTargetPosition();
             UpdatePosition();
         }

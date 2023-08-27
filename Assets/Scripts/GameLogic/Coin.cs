@@ -1,7 +1,8 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace MultiplayerTask {
-    public class Coin : MonoBehaviour {
+    public class Coin : NetworkBehaviour {
         public bool IsCollectable { get; private set; }
 
         private void Start() {
@@ -9,6 +10,7 @@ namespace MultiplayerTask {
         }
 
         private void OnTriggerEnter2D(Collider2D other) {
+            if (!IsServer) return;
             var player = other.GetComponent<Player>();
             if (player != null) {
                 Collect(player);
