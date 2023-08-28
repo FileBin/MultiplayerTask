@@ -1148,6 +1148,7 @@ GameObject:
   - component: {fileID: 5935088739792048993}
   - component: {fileID: 2341946750414650174}
   - component: {fileID: 8278956305182696707}
+  - component: {fileID: 6495556483642340335}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -1227,6 +1228,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MovementRange: 50
   m_ControlPath: <Gamepad>/rightStick
+--- !u!114 &6495556483642340335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8767695414407309632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ControlPath: <Gamepad>/buttonWest
 --- !u!1 &8888666420043850540
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,6 @@
+using System.Linq;
+using TMPro;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,12 +11,17 @@ namespace MultiplayerTask {
         public int Health {
             get => m_health.Value;
             set {
-                m_health.Value = value;
-                if (m_health.Value < 0) {
+                if (value <= 0) {
                     OnDeath();
+                    m_health.Value = 0;
+                    return;
                 }
+                m_health.Value = value;
+
             }
         }
+
+        public string PlayerName { get => m_playerName.Value.ToString(); }
 
         public bool IsPlayable { get => m_playable.Value; }
         public bool IsDead { get => m_dead.Value; }
@@ -29,7 +37,8 @@ namespace MultiplayerTask {
         private NetworkVariable<int> m_coins = new NetworkVariable<int>();
         private NetworkVariable<int> m_health = new NetworkVariable<int>();
         internal NetworkVariable<bool> m_playable = new NetworkVariable<bool>();
-        internal NetworkVariable<bool> m_dead = new NetworkVariable<bool>();
+        private NetworkVariable<bool> m_dead = new NetworkVariable<bool>();
+        NetworkVariable<FixedString64Bytes> m_playerName = new NetworkVariable<FixedString64Bytes>("Player", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         [SerializeField] int maxHealth = 20;
         [SerializeField] float rechargeTime = 20;
@@ -44,6 +53,7 @@ namespace MultiplayerTask {
 
         new Rigidbody2D rigidbody;
         InputAction fireDirectionAction;
+        InputAction fireAutoAimAction;
         float recharge = 0f;
         bool flipX = false;
 
@@ -54,8 +64,10 @@ namespace MultiplayerTask {
             var id = NetworkManager.LocalClientId;
             if (id % 2 == 0) {
                 transform.position = GameObject.FindGameObjectWithTag("Player1Spawn").transform.position;
+                m_playerName.Value = "Player1";
             } else {
                 transform.position = GameObject.FindGameObjectWithTag("Player2Spawn").transform.position;
+                m_playerName.Value = "Player2";
             }
         }
 
@@ -68,6 +80,7 @@ namespace MultiplayerTask {
             LookDirection = Vector2.left;
             if (IsClient) {
                 fireDirectionAction = ActionMap.FindAction("fire", true);
+                fireAutoAimAction = ActionMap.FindAction("autoaim", true);
             }
         }
 
@@ -85,10 +98,19 @@ namespace MultiplayerTask {
             var movement = rigidbody.velocity;
 
             var rightStick = fireDirectionAction.ReadValue<Vector2>();
-            bool fire = rightStick.sqrMagnitude > 0.1f;
+            bool fire = rightStick.sqrMagnitude > 0.25f;
             if (fire) {
                 LookDirection = rightStick.normalized;
                 movement = rightStick;
+            } else {
+                var autoAim = fireAutoAimAction.ReadValue<float>() > 0.5f;
+                if (autoAim) {
+                    fire = true;
+                    if (GetAimDirection(out var aimDirection)) {
+                        LookDirection = aimDirection;
+                        movement = aimDirection;
+                    }
+                }
             }
 
             if (movement.x > Vector2.kEpsilon)
@@ -107,6 +129,21 @@ namespace MultiplayerTask {
             } else {
                 recharge -= Time.deltaTime;
             }
+        }
+
+        private bool GetAimDirection(out Vector2 aimDirection) {
+            aimDirection = Vector2.left;
+            var enemies = GameObject.FindGameObjectsWithTag("Player").Where(x => x != gameObject);
+            var enumerator = enemies.GetEnumerator();
+            if (!enumerator.MoveNext()) return false;
+            aimDirection = enumerator.Current.transform.position - transform.position;
+            while (enumerator.MoveNext()) {
+                var nextDirection = enumerator.Current.transform.position - transform.position;
+                if (nextDirection.sqrMagnitude < aimDirection.sqrMagnitude)
+                    aimDirection = nextDirection;
+            }
+            aimDirection.Normalize();
+            return true;
         }
 
         [ServerRpc]

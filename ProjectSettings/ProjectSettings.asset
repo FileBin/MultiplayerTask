@@ -8,7 +8,7 @@ PlayerSettings:
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
-  defaultScreenOrientation: 4
+  defaultScreenOrientation: 3
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
@@ -136,6 +136,9 @@ PlayerSettings:
     Others: 1
   bundleVersion: 1.0.2
   preloadedAssets:
+  - {fileID: 11400000, guid: bdc6ef093b4dc7ed2a2a41d9345b4826, type: 2}
+  - {fileID: 11400000, guid: d6c1a803e9547de9f9fdc6bed76ce604, type: 2}
+  - {fileID: 268737115296927195, guid: d2271714333033cc2b75e1dfab79fd4f, type: 2}
   - {fileID: 11400000, guid: cbebf23333f83155fb74d2e54f8b46ef, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -145,13 +148,13 @@ PlayerSettings:
   vrSettings:
     enable360StereoCapture: 0
   isWsaHolographicRemotingEnabled: 0
-  enableFrameTimingStats: 0
+  enableFrameTimingStats: 1
   enableOpenGLProfilerGPURecorders: 1
   useHDRDisplay: 0
   D3DHDRBitDepth: 0
   m_ColorGamuts: 00000000
-  targetPixelDensity: 30
-  resolutionScalingMode: 0
+  targetPixelDensity: 150
+  resolutionScalingMode: 1
   resetResolutionOnWindowResize: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
@@ -250,7 +253,7 @@ PlayerSettings:
   useCustomBaseGradleTemplate: 0
   useCustomGradlePropertiesTemplate: 0
   useCustomProguardFile: 0
-  AndroidTargetArchitectures: 1
+  AndroidTargetArchitectures: 3
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
@@ -670,6 +673,7 @@ PlayerSettings:
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
+    Android: 0
     Standalone: 1
   il2cppCompilerConfiguration: {}
   managedStrippingLevel: {}

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,7 +9,7 @@ public class LobbyManager : MonoBehaviour {
         if (args.Contains("-game")) {
             Join();
         }
-        NetworkManager.Singleton.Shutdown();
+        NetworkManager.Singleton?.Shutdown();
     }
     public void Join() {
         SceneManager.LoadScene("GameMultiplayer");

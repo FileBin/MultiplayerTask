@@ -1,9 +1,7 @@
 using System;
-using System.Linq;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace MultiplayerTask {
@@ -28,6 +26,7 @@ namespace MultiplayerTask {
                 throw new Exception("In scene can be only one GameManager!");
             }
             Instance = this;
+            Application.targetFrameRate = 60;
         }
 
         public override void OnNetworkSpawn() {

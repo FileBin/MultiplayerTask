@@ -22,6 +22,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "autoaim",
+                    "type": "Button",
+                    "id": "a43f9525-fb6d-4b7f-bd52-c9e38c62bd56",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -156,6 +165,28 @@
                     "action": "fire",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "2a7e0838-577a-4ecc-a52d-cc30b3dd5a73",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "autoaim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e0fe5735-50b3-4f1d-9552-eb297542c59e",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "autoaim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
