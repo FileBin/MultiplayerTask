@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
@@ -7,7 +8,6 @@ using UnityEngine.SceneManagement;
 
 namespace MultiplayerTask {
     public class GameManager : NetworkBehaviour {
-
         public static GameManager Instance { get; private set; }
 
         enum GameStage { WaitingForPlayers, BattleStart, Battle, EndGame, Exit }
@@ -15,7 +15,7 @@ namespace MultiplayerTask {
 
         int winnerIndex = -1;
         int winnerCoins = 0;
-
+        [SerializeField] bool isSinglePlayer = false;
         [SerializeField] ObjectSpawner CoinSpawner;
 
         NetworkVariable<FixedString128Bytes> serverMessage = new NetworkVariable<FixedString128Bytes>("");
@@ -30,7 +30,20 @@ namespace MultiplayerTask {
             Instance = this;
         }
 
+        public override void OnNetworkSpawn() {
+            if (IsClient) {
+                NetworkManager.Singleton.OnClientDisconnectCallback += id => {
+                    LoadLobby();
+                };
+            }
+        }
+
         void Update() {
+            if (isSinglePlayer) {
+                stage = GameStage.Battle;
+                InitPlayers();
+                return;
+            }
             if (!IsServer) return;
             switch (stage) {
                 case GameStage.WaitingForPlayers:
@@ -106,13 +119,14 @@ namespace MultiplayerTask {
         }
 
         private void Exit() {
+            if (NetworkManager.Singleton.ShutdownInProgress) return;
+            NetworkManager.Singleton.Shutdown();
             Scene scene = SceneManager.GetActiveScene();
-            NetworkManager.Singleton.SceneManager.UnloadScene(scene);
-            ExitClientRpc();
+            SceneManager.LoadSceneAsync(scene.name);
         }
 
-        [ClientRpc]
-        private void ExitClientRpc() {
+        public void LoadLobby() {
+            NetworkManager.Singleton.Shutdown();
             SceneManager.LoadScene("Lobby");
         }
 

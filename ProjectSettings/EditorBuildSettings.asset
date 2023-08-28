@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameMultiplayer.unity
     guid: 3fc8acdd13e6c734bafef6554d6fdbcd
+  - enabled: 1
+    path: Assets/Scenes/GameSingle.unity
+    guid: d7cd17aaa3158ae3dbbd5e1c545eb249
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: d2271714333033cc2b75e1dfab79fd4f, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: d4cc6146d5e896ceeb9211381267482c, type: 2}

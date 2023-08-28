@@ -49,11 +49,12 @@ namespace MultiplayerTask {
 
         public override void OnNetworkSpawn() {
             base.OnNetworkSpawn();
-            var players_count = GameObject.FindGameObjectsWithTag("Player").Length;
-            if (players_count == 1) {
+            if (!IsClient) return;
+            if (!IsOwner) return;
+            var id = NetworkManager.LocalClientId;
+            if (id % 2 == 0) {
                 transform.position = GameObject.FindGameObjectWithTag("Player1Spawn").transform.position;
-            }
-            if (players_count == 2) {
+            } else {
                 transform.position = GameObject.FindGameObjectWithTag("Player2Spawn").transform.position;
             }
         }
