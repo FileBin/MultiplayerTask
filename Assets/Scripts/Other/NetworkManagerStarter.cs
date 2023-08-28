@@ -20,6 +20,7 @@ namespace MultiplayerTask {
                 if (isSinglePlayer) {
                     if (NetworkManager.Singleton.IsHost) return;
                     NetworkManager.Singleton.StartHost();
+                    enabled = false;
                 } else {
                     if (NetworkManager.Singleton.IsClient) return;
                     NetworkManager.Singleton.StartClient();

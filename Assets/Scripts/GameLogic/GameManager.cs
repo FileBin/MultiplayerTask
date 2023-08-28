@@ -126,8 +126,10 @@ namespace MultiplayerTask {
         }
 
         public void LoadLobby() {
-            NetworkManager.Singleton.Shutdown();
-            SceneManager.LoadScene("Lobby");
+            if (IsClient) {
+                NetworkManager.Singleton.Shutdown();
+                SceneManager.LoadScene("Lobby");
+            }
         }
 
         private void InitPlayers() {
